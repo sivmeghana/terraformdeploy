@@ -1,0 +1,36 @@
+
+
+trigger:
+- main
+
+pool:
+  name: Default
+  demands:
+    agent.name -equals myvm
+
+steps:
+- task: TerraformInstaller@0
+  inputs:
+    terraformVersion: '0.12.3'
+- task: TerraformTaskV3@3
+  displayName: terraform init
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendServiceArm: 'Azure subscription 1(ac17dea1-2710-4a87-b16f-88ff9a3b5bec)'
+    backendAzureRmResourceGroupName: 'tamopstf'
+    backendAzureRmStorageAccountName: 'tamopstf10'
+    backendAzureRmContainerName: 'tfstatedevops'
+    backendAzureRmKey: 'terraform.tfstate'
+    
+- task: TerraformTaskV3@3
+  displayName: terraform validate
+  inputs:
+    provider: 'azurerm'
+    command: 'validate'
+- task: TerraformTaskV3@3
+  displayName: terraform plan
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    environmentServiceNameAzureRM: 'tamopstf'
